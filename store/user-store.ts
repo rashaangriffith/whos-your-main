@@ -17,7 +17,7 @@ export type UserActions = {
 export type UserStore = UserState & UserActions;
 
 export const defaultInitState: UserState = {
-  name: "Default Name",
+  name: "",
   characters: [],
 };
 
