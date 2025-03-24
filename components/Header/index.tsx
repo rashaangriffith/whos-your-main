@@ -6,7 +6,11 @@ import { Label } from "../ui/label";
 import { useEffect } from "react";
 
 export default function Header({ routeLabel }: { routeLabel?: string }) {
-  const { name, load: loadUserData } = useUserStore((state) => state);
+  const {
+    load: loadUserData,
+    firstName,
+    lastName,
+  } = useUserStore((state) => state);
   const title = "Who's Your Main?";
   const fullLabel = routeLabel ? `${title}/${routeLabel}` : title;
 
@@ -22,10 +26,9 @@ export default function Header({ routeLabel }: { routeLabel?: string }) {
       });
       const data = await response.json();
       console.log("loadUser data: ", data);
-      if (data.length > 0) {
-        const user = data[0];
-        loadUserData({ name: user.name });
-        console.log("user: ", user);
+      if (data) {
+        loadUserData(data);
+        console.log("user data: ", data);
       }
     } catch (error) {
       console.error(error);
@@ -44,7 +47,7 @@ export default function Header({ routeLabel }: { routeLabel?: string }) {
           <a href="/choose-game">
             <Button>Add a main</Button>
           </a>
-          <Label>{name}</Label>
+          <Label>{`${firstName} ${lastName}`}</Label>
         </div>
       </div>
       <hr />

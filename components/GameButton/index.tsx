@@ -1,22 +1,51 @@
 "use client";
 
+// import Image from "next/image";
 import { Button } from "../ui/button";
 
 export default function GameButton({
   id,
-  name,
+  label,
+  imageUrl,
   onClick,
+  onButtonClick,
 }: {
   id: number;
-  name: string;
-  onClick: ({ id, name }: { id: number; name: string }) => void;
+  label: string;
+  imageUrl?: string;
+  onClick?: ({ id }: { id: number }) => void;
+  onButtonClick?: ({ id }: { id: number }) => void;
 }) {
   function handleClick() {
-    return onClick({ id, name });
+    if (onClick) {
+      return onClick({ id });
+    }
   }
-  return (
-    <Button key={id} onClick={handleClick}>
-      {name}
-    </Button>
-  );
+
+  function handleButtonClick() {
+    if (onButtonClick) {
+      return onButtonClick({ id });
+    }
+  }
+
+  if (imageUrl) {
+    return (
+      <div
+        className="flex flex-col items-center"
+        style={{ maxWidth: "25%", height: "auto" }}
+      >
+        {onButtonClick && (
+          <Button onClick={handleButtonClick}>{`Add ${label}`}</Button>
+        )}
+        <img
+          src={imageUrl}
+          alt={label}
+          onClick={handleClick}
+          // style={{ width: "100%", height: "auto" }}
+        />
+      </div>
+    );
+  }
+
+  return <Button onClick={handleClick}>{label}</Button>;
 }
