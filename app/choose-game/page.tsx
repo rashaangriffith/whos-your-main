@@ -3,6 +3,7 @@
 import GameButton from "@/components/GameButton";
 import Header from "@/components/Header";
 import { Label } from "@/components/ui/label";
+import { useUserStore } from "@/providers/user-store-provider";
 import { Game } from "@/types/Game";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,23 +11,49 @@ import { toast } from "sonner";
 export default function ChooseGame() {
   const [games, setGames] = useState<Array<Game>>([]);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const { id: userId } = useUserStore((state) => state);
 
   function handleGameClick({ id }: { id: number }) {
     setSelectedGame(games.find((game) => game.id === id) || null);
   }
 
-  function handleCharacterClick({ id }: { id: number }) {
-    const character = selectedGame?.characters.find(
-      (gameCharacter) => gameCharacter.id === id
+  async function handleCharacterClick({ id }: { id: number }) {
+    const gameCharacter = selectedGame?.gameCharacters.find(
+      (gc) => gc.characterId === id
     );
-    toast(`Added ${character?.name} to Mains`, {
-      action: {
-        label: "Undo",
-        onClick: () => {
-          console.log(`Removed ${character?.name} from Mains`);
+
+    const character = selectedGame?.characters.find((c) => c.id === id);
+
+    if (!character || !gameCharacter) {
+      return;
+    }
+
+    try {
+      await fetch("http://localhost:3001/user-gamecharacters", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
-    });
+        body: JSON.stringify({
+          userId,
+          gameCharacterId: gameCharacter.id,
+        }),
+        mode: "cors",
+        referrerPolicy: "no-referrer",
+      });
+
+      toast(`Added ${character?.name} to Mains`, {
+        action: {
+          label: "Undo",
+          onClick: () => {
+            console.log(`Removed ${character?.name} from Mains`);
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      toast(`Error adding ${character?.name} to Mains`);
+    }
   }
 
   useEffect(() => {
@@ -69,16 +96,22 @@ export default function ChooseGame() {
         ))}
       </div>
       <hr />
-      <div className="flex flex flex-wrap gap-4">
-        {selectedGame?.characters.map((character) => (
-          <GameButton
-            key={character.id}
-            id={character.id}
-            label={character.name}
-            imageUrl={character.imageUrl}
-            onButtonClick={handleCharacterClick}
-          />
-        ))}
+      <div className="flex flex-wrap gap-4">
+        {selectedGame?.characters.map((character) => {
+          const gameCharacterImageUrl = selectedGame.gameCharacters.find(
+            (gc) => gc.characterId === character.id
+          )?.imageUrl;
+
+          return (
+            <GameButton
+              key={character.id}
+              id={character.id}
+              label={character.name}
+              imageUrl={gameCharacterImageUrl || character.imageUrl}
+              onButtonClick={handleCharacterClick}
+            />
+          );
+        })}
       </div>
     </div>
   );

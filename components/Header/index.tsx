@@ -4,6 +4,7 @@ import { useUserStore } from "@/providers/user-store-provider";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function Header({ routeLabel }: { routeLabel?: string }) {
   const {
@@ -42,7 +43,9 @@ export default function Header({ routeLabel }: { routeLabel?: string }) {
   return (
     <>
       <div className="flex items-center justify-between w-full">
-        <Label className="text-3xl">{fullLabel}</Label>
+        <Link href="/">
+          <Label className="text-3xl">{fullLabel}</Label>
+        </Link>
         <div className="flex items-center gap-4">
           <a href="/choose-game">
             <Button>Add a main</Button>

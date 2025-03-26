@@ -7,6 +7,7 @@ export type CharacterState = {
 };
 
 export type UserState = {
+  id: string;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -21,6 +22,7 @@ export type UserActions = {
 export type UserStore = UserState & UserActions;
 
 export const defaultInitState: UserState = {
+  id: "",
   email: "",
   characters: [],
 };
@@ -33,6 +35,7 @@ export const createUserStore = (initState: UserState = defaultInitState) =>
         console.log("load user, set data: ", userData);
         return {
           ...state,
+          id: userData.id,
           email: userData.email,
           firstName: userData.firstName,
           lastName: userData.lastName,

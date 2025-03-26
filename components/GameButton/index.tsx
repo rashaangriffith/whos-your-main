@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 // import Image from "next/image";
 import { Button } from "../ui/button";
 
@@ -37,12 +38,19 @@ export default function GameButton({
         {onButtonClick && (
           <Button onClick={handleButtonClick}>{`Add ${label}`}</Button>
         )}
-        <img
+        <Image
+          src={imageUrl}
+          alt={label}
+          width={200}
+          height={200}
+          onClick={handleClick}
+        />
+        {/* <img
           src={imageUrl}
           alt={label}
           onClick={handleClick}
           // style={{ width: "100%", height: "auto" }}
-        />
+        /> */}
       </div>
     );
   }

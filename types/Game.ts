@@ -1,4 +1,5 @@
 import { Character } from "./Character";
+import { GameCharacter } from "./GameCharacter";
 
 export interface Game {
   id: number;
@@ -8,4 +9,5 @@ export interface Game {
   platform?: string;
   imageUrl?: string;
   characters: Array<Character>;
+  gameCharacters: Array<GameCharacter>;
 }
